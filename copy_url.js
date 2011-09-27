@@ -32,8 +32,8 @@
         twit: twit,
         href: document.location.href,
         htag: htag,
-        selt: (sel ? "\n\n"+sel : sel), // selection as text
-        selh: (sel ? "<br>"+sel : sel)  // selection as HTML
+        selt: (sel ? "\n\n"+sel : ""), // plain text separator + selection
+        selh: (sel ? "<br>"+sel : "")  // HTML separator + selection
     };
 
     //----- Step 2: write the output to a new page
@@ -43,7 +43,7 @@
     d.write(
         ( '<html><head><title>Copy link: {ttl}</title></head><body>'
         // First rendered HTML for WYSIWYG editors (a single chunk for easy copying)
-        + '<a href="{href}">{ttl}</a><br>{selh}<br><br>'
+        + '<a href="{href}">{ttl}</a>{selh}<br><br>'
         // Then plain text: ...
         + '<textarea id="text" cols="80" rows="10">'
         // ...Twitter
