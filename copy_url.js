@@ -3,10 +3,21 @@
 
 (function() {
     // Change to following to your liking
-    var hosts = {
-        "www.macrumors.com": { re: /^(.*) - Mac Rumors$/, twit: "@MacRumors" },
-        "www.2ality.com": { htag: "#2ality" }
-    }
+    var hostEntries = [
+        [ "www.2ality.com", { htag: "#2ality" } ],
+        [ "addyosmani.com", { twit: "@addyosmani" } ],
+        [ "arstechnica.com", { twit: "@arstechnica" } ],
+        [ "daringfireball.net", { re: /^Daring Fireball Linked List: (.*)$/, twit: "@daringfireball" } ],
+        [ "functionsource.com", { re: /^FunctionSource: (.*)$/, twit: "@functionsource" } ],
+        [ "hacks.mozilla.org", { re: /^(.*) ✩ Mozilla Hacks – the Web developer blog$/, twit: "@mozhacks" } ],
+        [ "www.macrumors.com", { re: /^(.*) - Mac Rumors$/, twit: "@MacRumors" } ],
+        [ "www.marco.org", { re: /^(.*) – Marco.org$/, twit: "@marcoarment" } ],
+        [ "mashable.com", { twit: "@mashable" } ],
+        [ /^.*nytimes.com$/, { re: /^(.*) - NYTimes.com$/, twit: "@nytimes" } ],
+        [ "spinoff.comicbookresources.com", { re: /^(.*) « Spinoff Online – TV, Film and Entertainment News Daily$/, twit: "@SpinoffOnline" } ],
+        [ "www.theverge.com", { re: /^(.*) [|] The Verge$/, twit: "@verge" } ],
+        [ "unscriptable.com", { re: /^(.*) [|] Unscriptable.com$/, twit: "@unscriptable" } ],
+    ];
     
     //----- Step 1: collect the input from the current page
     
@@ -15,10 +26,29 @@
     var ttl = document.title;
     var twit = "";
     var htag = "";
-    var hostDesc = hosts[document.location.host];
+    var hostDesc;
+    hostEntries.some(function(hostEntry) {
+        var key = hostEntry[0];
+        if (key instanceof RegExp) {
+            if (key.test(document.location.host)) {
+                hostDesc = hostEntry[1];
+                return true; // break
+            }
+        } else {
+            if (key === document.location.host) {
+                hostDesc = hostEntry[1];
+                return true; // break
+            }
+        }
+    });
     if (hostDesc) {
         if (hostDesc.re) {
-            ttl = hostDesc.re.exec(ttl)[1];
+            var match = hostDesc.re.exec(ttl);
+            if (match) {
+                ttl = match[1];
+            } else {
+                alert("Warning: The title “"+ttl+"” does not match regex "+hostDesc.re);
+            }
         }
         if (hostDesc.twit) {
             twit = hostDesc.twit + " ";
