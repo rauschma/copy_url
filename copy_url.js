@@ -81,18 +81,27 @@
         '<html><head><title>Copy link: {htitle}</title></head><body>'
         + '<textarea id="text" cols="80" rows="10">'
     );
+    
     // Plain text/Twitter
     var text = tmpl(data,
         '{ttitle}\n{thref}'
-        + '\n\n'
     );
+    
     // HTML link
+    text += '\n\n';  // don’t include in selection
     var selectionStart = text.length;
     text += tmpl(data,
         '<a href="{hhref}">{htitle}</a>'
     );
     var selectionEnd = text.length;
-    // Optionally: selection
+
+    // Tab-separated, to be pasted into a spreadsheet
+    // Trailing tab, so that one more column can easily be added
+    text += tmpl(data,
+        '\n\n{hhref}\t{htitle}\t'
+    );
+    
+    // Optionally: selected text
     if (sel) {
         text += "\n\n" + sel;
     }
